@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Job | CareerConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 20px;
+        }
+
+        header {
+            background: linear-gradient(90deg, #6a38c2, #6a38c2);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .workflow-steps {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            position: relative;
+            background: #f8fafc;
+        }
+
+        .workflow-steps::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 24px;
+            color: #7f8c8d;
+        }
+
+        .step.completed .step-icon {
+            background: #2ecc71;
+            color: white;
+            border-color: #2ecc71;
+        }
+
+        .step.active .step-icon {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .step-text {
+            font-size: 14px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .step.completed .step-text {
+            color: #2ecc71;
+        }
+
+        .step.active .step-text {
+            color: #3498db;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .congratulations {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0e8fc 0%, #e5d1ff 100%);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .congratulations i {
+            font-size: 50px;
+            color: #2ecc71;
+            margin-bottom: 15px;
+        }
+
+        .congratulations h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .congratulations p {
+            color: #7f8c8d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .application-status {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .status-header i {
+            font-size: 24px;
+            color: #3498db;
+            margin-right: 10px;
+        }
+
+        .status-header h3 {
+            color: #2c3e50;
+        }
+
+        .status-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f5f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .status-details {
+            flex-grow: 1;
+        }
+
+        .status-details h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .status-details p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .status-date {
+            color: #95a5a6;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .status-completed .status-icon {
+            background: #e8f6ef;
+            color: #2ecc71;
+        }
+
+        .status-current .status-icon {
+            background: #e8f4fc;
+            color: #3498db;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+        }
+
+        .job-offer {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .offer-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .offer-header i {
+            font-size: 24px;
+            color: #2ecc71;
+            margin-right: 10px;
+        }
+
+        .offer-header h3 {
+            color: #2c3e50;
+        }
+
+        .offer-details {
+            margin-bottom: 25px;
+        }
+
+        .offer-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .offer-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .offer-label {
+            color: #7f8c8d;
+        }
+
+        .offer-value {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .salary {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .accept-btn {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .accept-btn:hover {
+            background: linear-gradient(90deg, #27ae60, #219653);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+        }
+
+        .negotiate-btn {
+            flex: 1;
+            padding: 12px;
+            background: white;
+            color: #3498db;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .negotiate-btn:hover {
+            background: #e8f4fc;
+            transform: translateY(-2px);
+        }
+
+        .next-steps {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .steps-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .steps-header i {
+            font-size: 24px;
+            color: #f39c12;
+            margin-right: 10px;
+        }
+
+        .steps-header h3 {
+            color: #2c3e50;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .step-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-card i {
+            font-size: 32px;
+            color: #6a38c2;
+            margin-bottom: 15px;
+        }
+
+        .step-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .step-card p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .workflow-steps {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .workflow-steps::before {
+                display: none;
+            }
+
+            .step {
+                display: flex;
+                align-items: center;
+                text-align: left;
+            }
+
+            .step-icon {
+                margin: 0 15px 0 0;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 24px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .congratulations {
+                padding: 15px;
+            }
+            
+            .application-status, .job-offer, .next-steps {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Get Job</h1>
+            <p>Congratulations! You're one step away from your new career</p>
+        </header>
+
+        <div class="workflow-steps">
+            <div class="step completed">
+                <div class="step-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="step-text">Create Account</div>
+            </div>
+            <div class="step completed">
+                <div class="step-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="step-text">Search Job</div>
+            </div>
+            <div class="step completed">
+                <div class="step-icon">
+                    <i class="fas fa-file-upload"></i>
+                </div>
+                <div class="step-text">Upload CV/Resume</div>
+            </div>
+            <div class="step active">
+                <div class="step-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="step-text">Get Job</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="congratulations">
+                <i class="fas fa-check-circle"></i>
+                <h2>Congratulations, Sarah Johnson!</h2>
+                <p>TechSolutions Inc. has extended a job offer for the position of Frontend Developer. Review the details below and take the next step in your career journey.</p>
+            </div>
+
+            <div class="application-status">
+                <div class="status-header">
+                    <i class="fas fa-tasks"></i>
+                    <h3>Application Status</h3>
+                </div>
+                <div class="status-item status-completed">
+                    <div class="status-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="status-details">
+                        <h4>Application Submitted</h4>
+                        <p>Your application was successfully sent</p>
+                        <div class="status-date">May 15, 2023</div>
+                    </div>
+                </div>
+                <div class="status-item status-completed">
+                    <div class="status-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="status-details">
+                        <h4>Application Reviewed</h4>
+                        <p>Recruiter reviewed your profile</p>
+                        <div class="status-date">May 18, 2023</div>
+                    </div>
+                </div>
+                <div class="status-item status-completed">
+                    <div class="status-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="status-details">
+                        <h4>Interview</h4>
+                        <p>Completed technical interview</p>
+                        <div class="status-date">May 22, 2023</div>
+                    </div>
+                </div>
+                <div class="status-item status-current">
+                    <div class="status-icon">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div class="status-details">
+                        <h4>Job Offer</h4>
+                        <p>Offer extended - pending your response</p>
+                        <div class="status-date">May 25, 2023</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="job-offer">
+                <div class="offer-header">
+                    <i class="fas fa-file-contract"></i>
+                    <h3>Job Offer Details</h3>
+                </div>
+                <div class="offer-details">
+                    <div class="offer-item">
+                        <span class="offer-label">Position:</span>
+                        <span class="offer-value">Frontend Developer</span>
+                    </div>
+                    <div class="offer-item">
+                        <span class="offer-label">Company:</span>
+                        <span class="offer-value">TechSolutions Inc.</span>
+                    </div>
+                    <div class="offer-item">
+                        <span class="offer-label">Location:</span>
+                        <span class="offer-value">Remote (US Timezones)</span>
+                    </div>
+                    <div class="offer-item">
+                        <span class="offer-label">Type:</span>
+                        <span class="offer-value">Full-time</span>
+                    </div>
+                    <div class="offer-item">
+                        <span class="offer-label">Start Date:</span>
+                        <span class="offer-value">June 12, 2023</span>
+                    </div>
+                    <div class="offer-item">
+                        <span class="offer-label">Salary:</span>
+                        <span class="offer-value salary">$85,000 - $95,000</span>
+                    </div>
+                    <div class="offer-item">
+                        <span class="offer-label">Benefits:</span>
+                        <span class="offer-value">Health insurance, 401(k), Remote work</span>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="accept-btn">Accept Offer</button>
+                    <button class="negotiate-btn">Negotiate Terms</button>
+                </div>
+            </div>
+
+            <div class="next-steps">
+                <div class="steps-header">
+                    <i class="fas fa-road"></i>
+                    <h3>Next Steps</h3>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <i class="fas fa-file-signature"></i>
+                        <h4>Sign Contract</h4>
+                        <p>Review and sign your employment agreement</p>
+                    </div>
+                    <div class="step-card">
+                        <i class="fas fa-user-check"></i>
+                        <h4>Background Check</h4>
+                        <p>Complete the required verification process</p>
+                    </div>
+                    <div class="step-card">
+                        <i class="fas fa-laptop"></i>
+                        <h4>Equipment Setup</h4>
+                        <p>Receive and set up your work equipment</p>
+                    </div>
+                    <div class="step-card">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <h4>Onboarding</h4>
+                        <p>Participate in company orientation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Accept offer button
+            const acceptBtn = document.querySelector('.accept-btn');
+            acceptBtn.addEventListener('click', function() {
+                if (confirm("Are you sure you want to accept this job offer?")) {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    this.disabled = true;
+                    
+                    // Simulate processing
+                    setTimeout(() => {
+                        alert('Offer accepted successfully! Welcome to TechSolutions Inc.');
+                        this.innerHTML = 'Offer Accepted!';
+                        this.style.background = 'linear-gradient(90deg, #27ae60, #219653)';
+                    }, 2000);
+                }
+            });
+
+            // Negotiate button
+            const negotiateBtn = document.querySelector('.negotiate-btn');
+            negotiateBtn.addEventListener('click', function() {
+                const message = prompt("Please specify what terms you would like to negotiate:");
+                if (message !== null) {
+                    if (message.trim() === "") {
+                        alert("Please provide negotiation details.");
+                        return;
+                    }
+                    
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                    this.disabled = true;
+                    
+                    // Simulate sending
+                    setTimeout(() => {
+                        alert('Your negotiation request has been sent to the employer.');
+                        this.innerHTML = 'Request Sent';
+                        this.style.background = '#e8f4fc';
+                        this.style.color = '#2ecc71';
+                        this.style.borderColor = '#2ecc71';
+                    }, 1500);
+                }
+            });
+
+            // Animate status items on scroll
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe status items for animation
+            document.querySelectorAll('.status-item').forEach(item => {
+                item.style.opacity = 0;
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(item);
+            });
+
+            // Observe step cards for animation
+            document.querySelectorAll('.step-card').forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
